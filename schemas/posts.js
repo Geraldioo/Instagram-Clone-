@@ -46,7 +46,8 @@ const resolversPost = {
       auth();
       try {
         const posts = await Post.findAll();
-        return posts;a
+        return posts;
+        a;
       } catch (error) {
         throw error;
       }
@@ -56,7 +57,6 @@ const resolversPost = {
     addPost: async (_, { content, tags, imgUrl, authorId }, { auth }) => {
       auth();
       try {
-        console.log(authorId, "<<<");
         if (!content) throw new Error("Content is required");
         if (!imgUrl) throw new Error("Image Url is required");
         if (!authorId) throw new Error("Author Id is required");
@@ -65,8 +65,10 @@ const resolversPost = {
           tags,
           imgUrl,
           authorId,
-          createdAt: new Date(),
-          updatedAt: new Date(),
+          comments: [],
+          likes: [],
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
         };
         const result = await Post.createOne(newPost);
         newPost._id = result.insertedId;
@@ -77,46 +79,41 @@ const resolversPost = {
         throw error;
       }
     },
-    commentPost: async (_, args) => {
+    commentPost: async (_, { content, _id }, { auth }) => {
       try {
-        if (!args._id) {
-          throw new Error("Not Found", {
-            extensions: {
-              code: "NOT_FOUND",
-            },
-          });
-        }
+        auth();
+        const currentUser = auth();
+        if (!content) throw new Error("Content is required");
+        if (!_id) throw new Error("Id not found");
+
         const newComment = {
-          content: args.content,
-          username: args.username,
+          content,
+          username: currentUser.username,
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
         };
-        const post = await Post.findById(args._id);
-        const result = post.comments.push(newComment);
+
+        const result = await Post.updateOne(_id, { comments: newComment });
 
         return result;
       } catch (error) {
         throw error;
       }
     },
-    likePost: async (_, args) => {
+    likePost: async (_, { _id }, { auth }) => {
       try {
-        if (!args._id) {
-          throw new GraphQLError("Not Found", {
-            extensions: {
-              code: "NOT_FOUND",
-            },
-          });
-        }
+        auth()
+        const currentLike = auth();
+        console.log(currentLike);
+        if (!_id) throw new Error("Id not found");
+        if (!currentLike.username) throw new Error("Username is required");
+
         const newLike = {
-          username,
+          username: currentLike.username,
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
         };
-        const post = await Post.findById(args._id);
-        const result = post.likes.push(newLike);
-
+        const result = await Post.updateOne(_id, { likes: newLike });
         return result;
       } catch (error) {
         throw error;
