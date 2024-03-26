@@ -31,10 +31,11 @@ const typeDefsPost = `#graphql
 
   type Query {
     posts: [Post]
+    post(_id: ID): Post
   }
   
   type Mutation {
-    addPost(content: String!, tags: [String], imgUrl: String, authorId: ID!): Post
+    addPost(content: String!, tags: [String], imgUrl: String): Post
     commentPost(_id: ID!, content: String!): Post
     likePost(_id: ID!): Post
   }
@@ -47,24 +48,36 @@ const resolversPost = {
       try {
         const posts = await Post.findAll();
         return posts;
-        a;
+      } catch (error) {
+        throw error;
+      }
+    },
+    post: async (_, args, contextValue) => {
+      try {
+        contextValue.auth();
+        if (!args._id) throw new Error("Id is required");
+
+        const post = await Post.findById(args._id);
+
+        return post;
       } catch (error) {
         throw error;
       }
     },
   },
   Mutation: {
-    addPost: async (_, { content, tags, imgUrl, authorId }, { auth }) => {
+    addPost: async (_, { content, tags, imgUrl}, { auth }) => {
       auth();
+      const currentUser = auth()
       try {
         if (!content) throw new Error("Content is required");
         if (!imgUrl) throw new Error("Image Url is required");
-        if (!authorId) throw new Error("Author Id is required");
+        if (!currentUser.id) throw new Error("Author Id is required");
         const newPost = {
           content,
           tags,
           imgUrl,
-          authorId,
+          authorId: currentUser.id,
           comments: [],
           likes: [],
           createdAt: new Date().toISOString(),

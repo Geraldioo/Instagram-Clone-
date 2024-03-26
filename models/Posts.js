@@ -7,8 +7,25 @@ class Post {
   }
 
   static async findAll() {
-    const posts = await this.postCollection().find().toArray();
-    return posts;
+    const agg = [
+      {
+        $sort: {
+          createdAt: -1,
+        },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "authorId",
+          foreignField: "_id",
+          as: "author",
+        },
+      },
+    ];
+    const cursor = this.postCollection().aggregate(agg);
+    const result = await cursor.toArray();
+    console.log(result);
+    return result;
   }
 
   static async findById(id) {

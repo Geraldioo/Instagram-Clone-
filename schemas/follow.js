@@ -30,10 +30,10 @@ const resolversFollow = {
   Mutation: {
     followUser: async (_, { _id }, { auth }) => {
       auth();
-      const data = auth();
+      const currentUser = auth();
 
-      const followerId = new ObjectId(data.id);
-      const followingId = new ObjectId(_id);
+      const followerId = new ObjectId(String(currentUser.id));
+      const followingId = new ObjectId(String(_id));
 
       const newFollow = {
         followingId,
