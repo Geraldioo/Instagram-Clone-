@@ -1,5 +1,5 @@
 const { GraphQLError } = require("graphql");
-const Post = require("../models/Post");
+const Post = require("../models/Posts");
 
 const typeDefsPost = `#graphql
   scalar Date
@@ -67,7 +67,7 @@ const resolversPost = {
     commentPost: async (_, args) => {
       try {
         if (!args._id) {
-          throw new GraphQLError("Not Found", {
+          throw new Error("Not Found", {
             extensions: {
               code: "NOT_FOUND",
             },

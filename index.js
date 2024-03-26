@@ -1,11 +1,14 @@
-const { ApolloServer } = require ("@apollo/server");
-const { startStandaloneServer } = require ("@apollo/server/standalone");
-const  {resolversUser, typeDefsUser } = require ("./schemas/users")
+const { ApolloServer } = require("@apollo/server");
+const { startStandaloneServer } = require("@apollo/server/standalone");
+const { resolversUser, typeDefsUser } = require("./schemas/users");
+const { resolversPost, typeDefsPost } = require("./schemas/posts");
+const { resolversFollow, typeDefsFollow } = require("./schemas/follow");
+const { verifyToken } = require("./helpers/jwt");
 
 const server = new ApolloServer({
-  typeDefs: typeDefsUser,
-  resolvers: resolversUser,
-  introspection: true
+  typeDefs: [typeDefsUser, typeDefsPost, typeDefsFollow],
+  resolvers: [resolversUser, resolversPost, resolversFollow],
+  introspection: true,
 });
 
 (async () => {
@@ -14,13 +17,20 @@ const server = new ApolloServer({
     context: ({ req, res }) => {
       return {
         auth: () => {
-          const auth = req.headers.authorization
+          const auth = req.headers.authorization;
+          if (!auth) throw new Error("Invalid Token");
 
-          if (!auth) throw new Error("")
-        }
+          const [type, token] = auth.split(" ")
+          if (!token) throw new Error("Invalid Token");
+          if (type !== "Bearer") throw new Error("Invalid Token");
+
+          const decoded = verifyToken(token);
+          if(!decoded) throw new Error("Invalid Token");
+          
+          return decoded;
+        },
       };
     },
   });
   console.log(`🚀 Server ready at ${url}`);
-}) ();
-
+})();

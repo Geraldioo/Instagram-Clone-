@@ -32,7 +32,8 @@ const typeDefsUser = `#graphql
 
 const resolversUser = {
   Query: {
-    users: async () => {
+    users: async (_, __, { auth }) => {
+      auth()
       const users = await User.findAll()
       return users
     }
