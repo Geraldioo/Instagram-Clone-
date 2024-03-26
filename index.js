@@ -11,9 +11,13 @@ const server = new ApolloServer({
 (async () => {
   const { url } = await startStandaloneServer(server, {
     listen: { port: 4000 },
-    context: () => {
+    context: ({ req, res }) => {
       return {
-        id: "123",
+        auth: () => {
+          const auth = req.headers.authorization
+
+          if (!auth) throw new Error("")
+        }
       };
     },
   });
