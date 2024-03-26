@@ -8,7 +8,7 @@ const typeDefsPost = `#graphql
     _id: ID
     content: String!
     tags: [String]
-    imgUrl: String
+    imgUrl: String!
     authodId: ID! 
     comments: [Comments]
     likes: [Likes]
@@ -30,7 +30,7 @@ const typeDefsPost = `#graphql
     posts: [Post]
   }
   type Mutation {
-    createPost(content: String!, tags: [String], imgUrl: String, authodId: ID!): Post
+    addPost(content: String!, tags: [String], imgUrl: String, authodId: ID!): Post
     commentPost(_id: ID!, content: String!): Post
     likePost(_id: ID!): Post
   }
@@ -48,8 +48,12 @@ const resolversPost = {
     },
   },
   Mutation: {
-    createPost: async (_, { content, tags, imgUrl, authodId }) => {
+    addPost: async (_, { content, tags, imgUrl, authodId }, { auth }) => {
+      auth()
       try {
+        if(!content) throw new Error('Content is required');
+        if(!imgUrl) throw new Error('Image Url is required');
+        if(!authodId) throw new Error('Author Id is required');
         const newPost = {
           content,
           tags,

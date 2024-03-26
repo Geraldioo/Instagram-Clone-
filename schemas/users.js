@@ -47,7 +47,8 @@ const resolversUser = {
       const users = await User.getDetail(_id);
       return users;
     },
-    searchUser: async (_, { username }) => {
+    searchUser: async (_, { username }, { auth }) => {
+      auth();
       if (!username) throw new Error("Username required");
 
       const user = await User.getByUsername(username);

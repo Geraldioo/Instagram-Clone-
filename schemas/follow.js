@@ -1,7 +1,7 @@
 const { GraphQLError } = require("graphql");
 const Follow = require("../models/Follow");
 
-const typeDefs = `#graphql
+const typeDefsFollow = `#graphql
   scalar Date
 
   type Follow {
@@ -16,13 +16,15 @@ const typeDefs = `#graphql
   }
 `;
 
-const resolvers = {
+const resolversFollow = {
   Mutation: {
-    followUser: async (_, args) => {
+    followUser: async (_, args, { userId, auth }) => {
+      auth();
       try {
+        console.log(args, "<<< ARGS");
         const newFollow = {
           followingId: args._id,
-          followerId: username,
+          followerId: userId,
         };
         const result = await Follow.createOne(newFollow);
 
@@ -35,6 +37,6 @@ const resolvers = {
 };
 
 module.exports = {
-  typeDefs,
-  resolvers
+  typeDefsFollow,
+  resolversFollow,
 };

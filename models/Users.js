@@ -87,7 +87,7 @@ class User {
     const agg = [
       {
         $match: {
-          username: username,
+          username: { $regex: new RegExp(username, 'i') },
         },
       },
       {
