@@ -17,13 +17,19 @@ class User {
     });
     return findUser;
   }
-
-  static async findById(id) {
-    const user = await this.userCollection().findOne({
-      _id: new ObjectId(String(id)),
+  static async findByEmail(email) {
+    const findUser = await this.userCollection().findOne({
+      email: email,
     });
-    return user;
+    return findUser;
   }
+
+//   static async findById(id) {
+//     const user = await this.userCollection().findOne({
+//       _id: new ObjectId(String(id)),
+//     });
+//     return user;
+//   }
 
   static async createOne(payload) {
     const newUser = await this.userCollection().insertOne(payload);
