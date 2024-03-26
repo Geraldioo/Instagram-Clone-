@@ -6,7 +6,7 @@ class Follow {
     return database.collection("follows");
   }
 
-  static async createOne(payload) {
+  static async createFollow(payload) {
     const newFollow = await this.followCollection().insertOne(payload);
     return newFollow;
   }

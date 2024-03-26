@@ -9,28 +9,32 @@ const typeDefsPost = `#graphql
     content: String!
     tags: [String]
     imgUrl: String!
-    authodId: ID! 
-    comments: [Comments]
-    likes: [Likes]
-    createdAt: Date
-    updatedAt: Date
+    authorId: ID!
+    comments: [Comment]
+    likes: [Like]
+    createdAt: Date!
+    updatedAt: Date!
   }
-  type Comments {
+
+  type Comment {
     content: String!
     username: String!
-    createdAt: Date
-    updatedAt: Date
+    createdAt: Date!
+    updatedAt: Date!
   }
-  type Likes {
+
+  type Like {
     username: String!
-    createdAt: Date
-    updatedAt: Date
+    createdAt: Date!
+    updatedAt: Date!
   }
+
   type Query {
     posts: [Post]
   }
+  
   type Mutation {
-    addPost(content: String!, tags: [String], imgUrl: String, authodId: ID!): Post
+    addPost(content: String!, tags: [String], imgUrl: String, authorId: ID!): Post
     commentPost(_id: ID!, content: String!): Post
     likePost(_id: ID!): Post
   }
@@ -38,33 +42,38 @@ const typeDefsPost = `#graphql
 
 const resolversPost = {
   Query: {
-    posts: async () => {
+    posts: async (_, __, { auth }) => {
+      auth();
       try {
         const posts = await Post.findAll();
-        return posts;
+        return posts;a
       } catch (error) {
         throw error;
       }
     },
   },
   Mutation: {
-    addPost: async (_, { content, tags, imgUrl, authodId }, { auth }) => {
-      auth()
+    addPost: async (_, { content, tags, imgUrl, authorId }, { auth }) => {
+      auth();
       try {
-        if(!content) throw new Error('Content is required');
-        if(!imgUrl) throw new Error('Image Url is required');
-        if(!authodId) throw new Error('Author Id is required');
+        console.log(authorId, "<<<");
+        if (!content) throw new Error("Content is required");
+        if (!imgUrl) throw new Error("Image Url is required");
+        if (!authorId) throw new Error("Author Id is required");
         const newPost = {
           content,
           tags,
           imgUrl,
-          authodId,
+          authorId,
+          createdAt: new Date(),
+          updatedAt: new Date(),
         };
         const result = await Post.createOne(newPost);
         newPost._id = result.insertedId;
 
         return newPost;
       } catch (error) {
+        console.log(error);
         throw error;
       }
     },
@@ -79,9 +88,9 @@ const resolversPost = {
         }
         const newComment = {
           content: args.content,
-          username,
-          createdAt: new Date(),
-          updatedAt: new Date(),
+          username: args.username,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
         };
         const post = await Post.findById(args._id);
         const result = post.comments.push(newComment);
@@ -102,8 +111,8 @@ const resolversPost = {
         }
         const newLike = {
           username,
-          createdAt: new Date(),
-          updatedAt: new Date(),
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
         };
         const post = await Post.findById(args._id);
         const result = post.likes.push(newLike);
@@ -118,5 +127,5 @@ const resolversPost = {
 
 module.exports = {
   typeDefsPost,
-  resolversPost
+  resolversPost,
 };
