@@ -1,5 +1,6 @@
 const { ObjectId } = require("mongodb");
 const { database } = require("../config/mongo");
+const redis = require("../config/redis");
 
 class Post {
   static postCollection() {
@@ -7,37 +8,19 @@ class Post {
   }
 
   static async findAll() {
-    const agg = [
-      {
-        $sort: {
-          createdAt: -1,
-        },
-      },
-      {
-        $lookup: {
-          from: "users",
-          localField: "authorId",
-          foreignField: "_id",
-          as: "author",
-        },
-      },
-    ];
-    const cursor = this.postCollection().aggregate(agg);
-    const result = await cursor.toArray();
-    console.log(result);
-    return result;
-  }
-
-  static async findById(id) {
-    const agg = [
+    const redisPosts = await redis.get("posts");
+    if (redisPosts) {
+      return JSON.parse(redisPosts);
+    } else {
+      const agg = [
         {
-          $match: {
-            _id: new ObjectId(String(id))
+          $sort: {
+            createdAt: -1,
           },
         },
         {
           $lookup: {
-            from: "Users",
+            from: "users",
             localField: "authorId",
             foreignField: "_id",
             as: "author",
@@ -46,12 +29,37 @@ class Post {
       ];
       const cursor = this.postCollection().aggregate(agg);
       const result = await cursor.toArray();
-  
+      await redis.set("posts", JSON.stringify(result));
+      console.log(result);
       return result;
+    }
+  }
+
+  static async findById(id) {
+    const agg = [
+      {
+        $match: {
+          _id: new ObjectId(String(id)),
+        },
+      },
+      {
+        $lookup: {
+          from: "Users",
+          localField: "authorId",
+          foreignField: "_id",
+          as: "author",
+        },
+      },
+    ];
+    const cursor = this.postCollection().aggregate(agg);
+    const result = await cursor.toArray();
+
+    return result;
   }
 
   static async createOne(payload) {
     const newPost = await this.postCollection().insertOne(payload);
+    await redis.del("posts");
     return newPost;
   }
 
