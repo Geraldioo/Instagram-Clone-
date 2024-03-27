@@ -118,17 +118,26 @@ class Post {
   }
 
   static async unlikePost(id, username) {
-    const post = await this.postCollection().findOne({ _id: new ObjectId(String(id)) });
+    const post = await this.postCollection().findOne({
+      _id: new ObjectId(String(id)),
+    });
     if (!post) {
       throw new Error("Postingan Not Found");
     }
-  
+
     const result = await this.postCollection().updateOne(
       { _id: new ObjectId(String(id)) },
       { $pull: { likes: { username } } }
     );
-  
-    return result;
+
+    if (result.modifiedCount === 0) {
+      throw new Error("Post not found");
+    }
+
+    const updatedPost = await this.postCollection().findOne({
+      _id: new ObjectId(String(id)),
+    });
+    return updatedPost;
   }
 }
 

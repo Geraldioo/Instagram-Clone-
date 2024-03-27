@@ -151,8 +151,8 @@ const resolversPost = {
         const currentUser = auth();
         if (!_id) throw new Error("Id not found");
         if (!currentUser.username) throw new Error("Username is required");
-
         const result = await Post.unlikePost(_id, currentUser.username);
+        
         return result;
       } catch (error) {
         throw error;
