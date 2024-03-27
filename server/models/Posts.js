@@ -89,11 +89,14 @@ class Post {
         if (item.username === username) throw new Error("Already liked");
       });
     }
+
     const post = await this.postCollection().updateOne(
       { _id: new ObjectId(String(id)) },
       { $push: update }
     );
+
     if (!post) throw new Error("Post not found");
+
     const agg = [
       {
         $match: {
@@ -112,6 +115,20 @@ class Post {
     const cursor = this.postCollection().aggregate(agg);
     const result = await cursor.toArray();
     return result[0];
+  }
+
+  static async unlikePost(id, username) {
+    const post = await this.postCollection().findOne({ _id: new ObjectId(String(id)) });
+    if (!post) {
+      throw new Error("Postingan Not Found");
+    }
+  
+    const result = await this.postCollection().updateOne(
+      { _id: new ObjectId(String(id)) },
+      { $pull: { likes: { username } } }
+    );
+  
+    return result;
   }
 }
 

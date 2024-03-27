@@ -45,6 +45,7 @@ const typeDefsPost = `#graphql
     addPost(content: String!, tags: [String], imgUrl: String): Post
     commentPost(_id: ID!, content: String!): Comment
     likePost(_id: ID!): Like
+    unlikePost(_id: ID!): Like
   }
 `;
 
@@ -112,7 +113,11 @@ const resolversPost = {
           updatedAt: new Date().toISOString(),
         };
 
-        const result = await Post.updateOne(_id, { comments: newComment });
+        const result = await Post.updateOne(
+          _id,
+          { comments: newComment },
+          currentUser.username
+        );
         return newComment;
       } catch (error) {
         throw error;
@@ -130,8 +135,25 @@ const resolversPost = {
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
         };
-        const result = await Post.updateOne(_id, { likes: newLike }, currentUser.username);
+        const result = await Post.updateOne(
+          _id,
+          { likes: newLike },
+          currentUser.username
+        );
         return newLike;
+      } catch (error) {
+        throw error;
+      }
+    },
+    unlikePost: async (_, { _id }, { auth }) => {
+      try {
+        auth();
+        const currentUser = auth();
+        if (!_id) throw new Error("Id not found");
+        if (!currentUser.username) throw new Error("Username is required");
+
+        const result = await Post.unlikePost(_id, currentUser.username);
+        return result;
       } catch (error) {
         throw error;
       }

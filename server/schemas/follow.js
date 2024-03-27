@@ -17,6 +17,7 @@ const typeDefsFollow = `#graphql
   }
   type Mutation {
     followUser(_id: ID!): Follow
+    unfollowUser(_id: ID!): Follow
   }
 `;
 
@@ -35,6 +36,12 @@ const resolversFollow = {
       const followerId = new ObjectId(String(currentUser.id));
       const followingId = new ObjectId(String(_id));
 
+      const existingFollow = await Follow.findFollowers(
+        followingId,
+        followerId
+      );
+      console.log(existingFollow, "<<<< existingFollow");
+      console.log("MASUK");
       const newFollow = {
         followingId,
         followerId,
@@ -43,7 +50,32 @@ const resolversFollow = {
       };
       const result = await Follow.createFollow(newFollow);
       newFollow._id = result.insertedId;
+      console.log(newFollow, "<<<< newFollow");
       return newFollow;
+    },
+
+    unfollowUser: async (_, { _id }, { auth }) => {
+      try {
+        auth();
+        const currentUser = auth();
+
+        const followerId = new ObjectId(String(currentUser.id));
+        const followingId = new ObjectId(String(_id));
+
+        const existingFollow = await Follow.findFollowers(
+          followingId,
+          followerId
+        );
+        if (!existingFollow) {
+          throw new Error("You are not following this user");
+        }
+
+        const deleteResult = await Follow.deleteFollow(followingId, followerId);
+
+        return deleteResult;
+      } catch (error) {
+        throw error;
+      }
     },
   },
 };
