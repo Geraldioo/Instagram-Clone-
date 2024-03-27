@@ -36,8 +36,8 @@ const typeDefsPost = `#graphql
   
   type Mutation {
     addPost(content: String!, tags: [String], imgUrl: String): Post
-    commentPost(_id: ID!, content: String!): Post
-    likePost(_id: ID!): Post
+    commentPost(_id: ID!, content: String!): Comment
+    likePost(_id: ID!): Like
   }
 `;
 
@@ -52,23 +52,23 @@ const resolversPost = {
         throw error;
       }
     },
-    post: async (_, args, contextValue) => {
+    post: async (_, args, { auth }) => {
       try {
-        contextValue.auth();
+        auth();
         if (!args._id) throw new Error("Id is required");
 
         const post = await Post.findById(args._id);
 
-        return post;
+        return post[0];
       } catch (error) {
         throw error;
       }
     },
   },
   Mutation: {
-    addPost: async (_, { content, tags, imgUrl}, { auth }) => {
+    addPost: async (_, { content, tags, imgUrl }, { auth }) => {
       auth();
-      const currentUser = auth()
+      const currentUser = auth();
       try {
         if (!content) throw new Error("Content is required");
         if (!imgUrl) throw new Error("Image Url is required");
@@ -98,7 +98,6 @@ const resolversPost = {
         const currentUser = auth();
         if (!content) throw new Error("Content is required");
         if (!_id) throw new Error("Id not found");
-
         const newComment = {
           content,
           username: currentUser.username,
@@ -107,27 +106,25 @@ const resolversPost = {
         };
 
         const result = await Post.updateOne(_id, { comments: newComment });
-
-        return result;
+        return newComment;
       } catch (error) {
         throw error;
       }
     },
     likePost: async (_, { _id }, { auth }) => {
       try {
-        auth()
-        const currentLike = auth();
-        console.log(currentLike);
+        auth();
+        const currentUser = auth();
         if (!_id) throw new Error("Id not found");
-        if (!currentLike.username) throw new Error("Username is required");
+        if (!currentUser.username) throw new Error("Username is required");
 
         const newLike = {
-          username: currentLike.username,
+          username: currentUser.username,
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
         };
         const result = await Post.updateOne(_id, { likes: newLike });
-        return result;
+        return newLike;
       } catch (error) {
         throw error;
       }
