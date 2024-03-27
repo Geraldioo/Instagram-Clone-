@@ -1,5 +1,6 @@
 const { GraphQLError } = require("graphql");
 const Post = require("../models/Posts");
+const { ObjectId } = require("mongodb");
 
 const typeDefsPost = `#graphql
   scalar Date
@@ -14,8 +15,14 @@ const typeDefsPost = `#graphql
     likes: [Like]
     createdAt: Date!
     updatedAt: Date!
+    author: Author
   }
-
+  type Author {
+    _id: ID
+    name: String
+    username: String
+    email: String
+  }
   type Comment {
     content: String!
     username: String!
@@ -77,7 +84,7 @@ const resolversPost = {
           content,
           tags,
           imgUrl,
-          authorId: currentUser.id,
+          authorId: new ObjectId(String(currentUser.id)),
           comments: [],
           likes: [],
           createdAt: new Date().toISOString(),
@@ -123,7 +130,7 @@ const resolversPost = {
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
         };
-        const result = await Post.updateOne(_id, { likes: newLike });
+        const result = await Post.updateOne(_id, { likes: newLike }, currentUser.username);
         return newLike;
       } catch (error) {
         throw error;

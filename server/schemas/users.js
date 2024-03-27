@@ -25,7 +25,7 @@ const typeDefsUser = `#graphql
 
   type Query {
     userById(_id: ID): User
-    searchUser(username: String!): User,
+    searchUser(username: String!): [User],
   }
 
   type Token {
