@@ -1,17 +1,3 @@
-// import { View, Text, Button } from "react-native";
-
-// function LoginScreen({ navigation }) {
-//   return (
-//     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-//       <Text>Login Screen</Text>
-//       <Button title="Register" onPress={() => navigation.navigate('Register')} />
-//       <Button title="Home" onPress={() => navigation.navigate('Home')} />
-//     </View>
-//   );
-// }
-
-// export default LoginScreen;
-
 import {
   View,
   Text,
@@ -22,7 +8,16 @@ import {
 } from "react-native";
 import React from "react";
 import images from "../res/images";
-export default function LoginScreen({ _signInAsync, navigation }) {
+import { gql } from "@apollo/client";
+
+const LOGIN = gql`
+  mutation LOGIN($username: String!, $password: String!) {
+    login(username: $username, password: $password) {
+      accessToken
+    }
+  }
+`;
+export default function LoginScreen({ navigation }) {
   return (
     <View style={Styles.container}>
       <View style={Styles.logoContainer}>
@@ -39,12 +34,14 @@ export default function LoginScreen({ _signInAsync, navigation }) {
       </View>
       <View style={Styles.registerContainer}>
         <TouchableOpacity>
-            <Text style={Styles.registerText}>Don't have account? Register here</Text>
+          <Text style={Styles.registerText}>
+            Don't have account? Register here
+          </Text>
         </TouchableOpacity>
       </View>
       <TouchableOpacity
         style={Styles.loginContainer}
-        onPress={() => navigation.navigate("Home") }
+        onPress={() => navigation.navigate("Home")}
         // _signInAsync
       >
         <Text style={Styles.loginText}>Login</Text>
@@ -94,7 +91,7 @@ const Styles = StyleSheet.create({
   registerContainer: {
     alignItems: "flex-end",
     marginEnd: 20,
-    alignContent: "space-between"
+    alignContent: "space-between",
   },
   registerText: {
     color: "#0088f8",
