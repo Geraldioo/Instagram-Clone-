@@ -4,11 +4,12 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { FontAwesome } from "@expo/vector-icons";
 import { Foundation } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
-import LogoTitle from "../components/instagram";
 import HomeScreen from "../screens/HomeScreen";
 import ExploreScreen from "../screens/ExploreScreen";
 import AddPostScreen from "../screens/AddPostScreen";
 import ReelsScreen from "../screens/ReelsScreen";
+import ProfileScreen from "../screens/ProfileScreen";
+import LogoTitle from "../components/instagram";
 
 function TabNavigator() {
   return (
@@ -21,7 +22,7 @@ function TabNavigator() {
         headerTitleStyle: {
           fontWeight: "bold",
         },
-        headerLeft: () => <LogoTitle />,
+        headerLeft: () => <LogoTitle />, 
       }}
     >
       <Tab.Screen

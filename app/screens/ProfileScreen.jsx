@@ -1,6 +1,6 @@
 import { View, Text, Button } from "react-native";
 
-function LoginScreen({ navigation }) {
+function ProfileScreen({ navigation }) {
   return (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
       <Text>Profile Screen</Text>
@@ -9,4 +9,4 @@ function LoginScreen({ navigation }) {
   );
 }
 
-export default LoginScreen;
+export default ProfileScreen;
