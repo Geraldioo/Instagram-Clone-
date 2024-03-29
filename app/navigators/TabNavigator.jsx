@@ -2,7 +2,6 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 const Tab = createBottomTabNavigator();
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { FontAwesome } from "@expo/vector-icons";
-import { Foundation } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import HomeScreen from "../screens/HomeScreen";
 import ExploreScreen from "../screens/ExploreScreen";
@@ -10,8 +9,16 @@ import AddPostScreen from "../screens/AddPostScreen";
 import ReelsScreen from "../screens/ReelsScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import LogoTitle from "../components/instagram";
+import { useContext } from "react";
+import AuthContext from "../context/auth";
+import * as SecureStorage from "expo-secure-store";
 
-function TabNavigator() {
+function TabNavigator({navigation}) {
+  const { isSignedIn, setIsSignedIn } = useContext(AuthContext);
+  const handleLogout = async () => {
+    await SecureStorage.deleteItemAsync("accessToken")
+    setIsSignedIn(false)
+  }
   return (
     <Tab.Navigator
       screenOptions={{
@@ -31,9 +38,7 @@ function TabNavigator() {
               display: "flex",
               padding: 10,
             }}
-            onPress={async () => {
-              console.log("logout pressed");
-            }}
+            onPress={handleLogout}
           />
         ),
       }}

@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Image,
   Alert,
+  ActivityIndicator,
 } from "react-native";
 import React, { useContext, useState } from "react";
 import images from "../res/images";
@@ -14,48 +15,47 @@ import AuthContext from "../context/auth";
 import * as SecureStore from "expo-secure-store";
 import { SimpleLineIcons } from '@expo/vector-icons';
 import { Feather } from '@expo/vector-icons';
+import { Colors } from "react-native/Libraries/NewAppScreen";
 
 
 
-// const LOGIN = gql`
-// mutation Mutation($username: String!, $password: String!) {
-//   login(username: $username, password: $password) {
-//     accessToken
-//   }
-// }
-// `;
+const LOGIN = gql`
+mutation Mutation($username: String!, $password: String!) {
+  login(username: $username, password: $password) {
+    accessToken
+  }
+}
+`;
 export default function LoginScreen({ navigation }) {
-  // const [username, setUsername] = useState("");
-  // const [password, setPassword] = useState("");
-  // const { setIsSignedIn } = useContext(AuthContext);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const { setIsSignedIn } = useContext(AuthContext);
 
-  // console.log(setIsSignedIn, "<< DI LOGIN");
+  const [login, { error, loading, data }] = useMutation(LOGIN, {
+    onCompleted: async (data) => {
+      await SecureStore.setItemAsync("accessToken", data?.login.accessToken);
+      setIsSignedIn(true);
+    },
+  });
 
-  // const [login, { error, loading, data }] = useMutation(LOGIN, {
-  //   onCompleted: async (data) => {
-  //     await SecureStore.setItemAsync("accessToken", data?.login.accessToken);
-  //     setIsSignedIn(true);
-  //   },
-  // });
+  const handleLogin = async () => {
+    try {
+      login({
+        variables: { username, password },
+      });
+    } catch (error) {
+      console.log(error, "<< ERR");
+      Alert.alert("Error Login");
+    }
+  };
 
-  // const handleLogin = async () => {
-  //   try {
-  //     login({
-  //       variables: { username, password },
-  //     });
-  //     navigation.navigate("Home")
-  //   } catch (error) {
-  //     Alert.alert("Login Failed", error.message);
-  //   }
-  // };
-
-  // if (loading) {
-  //   return (
-  //     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-  //       <ActivityIndicator size="large" color={Colors.primary} />
-  //     </View>
-  //   );
-  // }
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" color={Colors.primary} />
+      </View>
+    );
+  }
 
   return (
     <View style={Styles.container}>
@@ -68,7 +68,8 @@ export default function LoginScreen({ navigation }) {
       <View style={Styles.mainContainer}>
       <SimpleLineIcons name="user" size={20} color="black" style={Styles.icon} />
         <TextInput
-          onChangeText={(text) => setUsername(text)}
+          onChangeText={setUsername}
+          value={username}
           style={Styles.mainInput}
           placeholder="username.."
         />
@@ -76,7 +77,8 @@ export default function LoginScreen({ navigation }) {
       <View style={Styles.mainContainer}>
       <Feather name="lock" size={20} color="black" style={Styles.icon} />
         <TextInput
-          onChangeText={(text) => setPassword(text)}
+          onChangeText={setPassword}
+          value={password}
           style={Styles.mainInput}
           placeholder="password.."
         />
@@ -97,10 +99,9 @@ export default function LoginScreen({ navigation }) {
       </View>
       <TouchableOpacity
         style={Styles.loginContainer}
-        onPress={() => navigation.navigate("Home")}
-        // _signInAsync
+        onPress={handleLogin}
       >
-        <Text onPress={() => handleLogin()} style={Styles.loginText}>
+        <Text style={Styles.loginText}>
           Login
         </Text>
       </TouchableOpacity>
