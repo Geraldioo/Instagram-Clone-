@@ -8,21 +8,49 @@ import {
 } from "react-native-gesture-handler";
 import colors from "../res/colors";
 import images from "../res/images";
-import StoryListItem from "../components/StoryListItem";
 
-const data = [{ key: "1" }];
+const data1 = [{key: '1'}];
+const data = [
+  {key: '1'},
+  {key: '2'},
+  {key: '3'},
+  {key: '4'},
+  {key: '5'},
+  {key: '6'},
+  /*{key: '7'},
+  {key: '8'},
+  {key: '9'},
+  {key: '10'},
+  {key: '11'},
+  {key: '12'},
+  {key: '13'},
+  {key: '14'},*/
+];
+function Test() {
+  return (
+    <View style={{flex: 1}}>
+      <TouchableOpacity
+        onPress={() => console.log('Pressed Profile Grid Image')}>
+        <Image
+          source={{uri: 'https://picsum.photos/1920/1080'}}
+          style={{
+            height: 200,
+            flex: 1,
+            marginEnd: 2,
+            marginBottom: 2,
+            alignItems: 'center',
+          }}
+        />
+      </TouchableOpacity>
+    </View>
+  );
+}
 
 export default function ProfileScreen() {
   return (
     <FlatList
       style={{ flex: 1, backgroundColor: colors.bottomBackGround }}
-      /*<ProfileHeader />
-      <UserBio />
-      <EditProfileButton />
-      <ConstantStories />
-      <LineSeperator />
-      <ProfileGrid />*/
-      data={data}
+      data={data1}
       renderItem={() => (
         <>
           <View style={Styles.container}>
@@ -138,14 +166,34 @@ export default function ProfileScreen() {
                 New
               </Text>
             </View>
-            <StoryListItem name="Holiday" />
           </ScrollView>
-          {/* 
-       
-          <ConstantStories />
-          <LineSeperator />
-          <GridIcon />
-          <ProfileGrid /> */}
+          <View
+            style={{
+              backgroundColor: "#262626",
+              height: 1,
+              justifyContent: "center",
+              marginTop: 10,
+            }}
+          ></View>
+          <View
+            style={{
+              justifyContent: "center",
+              alignSelf: "center",
+              marginVertical: 10,
+            }}
+          >
+            <TouchableOpacity>
+              <Image source={images.grid} style={{ width: 25, height: 25 }} />
+            </TouchableOpacity>
+          </View>
+          <FlatList
+            data={data}
+            style={{ marginTop: 2, marginStart: 2 }}
+            renderItem={({ item, index }) => <Test />}
+            numColumns={3}
+            indicatorStyle={"white"}
+            showsVerticalScrollIndicator={true}
+          />
         </>
       )}
     />

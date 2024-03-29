@@ -22,7 +22,20 @@ function TabNavigator() {
         headerTitleStyle: {
           fontWeight: "bold",
         },
-        headerLeft: () => <LogoTitle />, 
+        headerLeft: () => <LogoTitle />,
+        headerRight: () => (
+          <AntDesign
+            name="logout"
+            size={18}
+            style={{
+              display: "flex",
+              padding: 10,
+            }}
+            onPress={async () => {
+              console.log("logout pressed");
+            }}
+          />
+        ),
       }}
     >
       <Tab.Screen
@@ -41,7 +54,7 @@ function TabNavigator() {
       />
       <Tab.Screen
         name="Explore"
-        component={ ExploreScreen }
+        component={ExploreScreen}
         options={{
           tabBarLabel: () => null,
           tabBarIcon: ({ color, size }) => (

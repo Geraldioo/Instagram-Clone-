@@ -24,7 +24,7 @@ const images = {
   backButton: require('./images/backButton.png'),
   plusIcon: require('./images/plusIcon.png'),
   test: require('./images/test.png'),
-  // addIcon: require('./images/addIcon.png'),
+  addIcon: require('./images/addIcon.png'),
   searchInputIcon: require('./images/searchInputIcon.png'),
   dmBackButton: require('./images/dmBackButton.png'),
   redHeart: require('./images/redHeart.png'),

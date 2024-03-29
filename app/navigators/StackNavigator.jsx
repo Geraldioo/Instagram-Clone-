@@ -20,6 +20,16 @@ function StackNavigator() {
   return (
     <Stack.Navigator>
       <Stack.Screen
+        name="Register"
+        options={{ headerShown: false }}
+        component={RegisterScreen}
+      />
+      <Stack.Screen
+        name="Login"
+        options={{ headerShown: false }}
+        component={LoginScreen}
+      />
+      <Stack.Screen
         name="Home"
         component={TabNavigator}
         options={{ headerShown: false }}
