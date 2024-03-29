@@ -13,23 +13,28 @@ import images from "../res/images";
 import { gql, useMutation } from "@apollo/client";
 import AuthContext from "../context/auth";
 import * as SecureStore from "expo-secure-store";
-import { SimpleLineIcons } from '@expo/vector-icons';
-import { Feather } from '@expo/vector-icons';
+import { SimpleLineIcons } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 import { Colors } from "react-native/Libraries/NewAppScreen";
-
-
+import { FontAwesome6 } from "@expo/vector-icons";
 
 const LOGIN = gql`
-mutation Mutation($username: String!, $password: String!) {
-  login(username: $username, password: $password) {
-    accessToken
+  mutation Mutation($username: String!, $password: String!) {
+    login(username: $username, password: $password) {
+      accessToken
+    }
   }
-}
 `;
 export default function LoginScreen({ navigation }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const { setIsSignedIn } = useContext(AuthContext);
+  const [passwordVisible, setPasswordVisible] = useState(false);
+
+
+  const togglePasswordVisibility = () => {
+    setPasswordVisible(!passwordVisible);
+  };
 
   const [login, { error, loading, data }] = useMutation(LOGIN, {
     onCompleted: async (data) => {
@@ -40,12 +45,12 @@ export default function LoginScreen({ navigation }) {
 
   const handleLogin = async () => {
     try {
-      login({
+      await login({
         variables: { username, password },
       });
+      Alert.alert("Login Successfull");
     } catch (error) {
-      console.log(error, "<< ERR");
-      Alert.alert("Error Login");
+      Alert.alert("Error Login", error.message);
     }
   };
 
@@ -66,7 +71,12 @@ export default function LoginScreen({ navigation }) {
         />
       </View>
       <View style={Styles.mainContainer}>
-      <SimpleLineIcons name="user" size={20} color="black" style={Styles.icon} />
+        <SimpleLineIcons
+          name="user"
+          size={20}
+          color="black"
+          style={Styles.icon}
+        />
         <TextInput
           onChangeText={setUsername}
           value={username}
@@ -75,17 +85,28 @@ export default function LoginScreen({ navigation }) {
         />
       </View>
       <View style={Styles.mainContainer}>
-      <Feather name="lock" size={20} color="black" style={Styles.icon} />
+        <Feather name="lock" size={20} color="black" style={Styles.icon} />
         <TextInput
-          onChangeText={setPassword}
-          value={password}
           style={Styles.mainInput}
           placeholder="password.."
+          secureTextEntry={!passwordVisible}
+          value={password}
+          onChangeText={setPassword}
         />
+        <TouchableOpacity onPress={togglePasswordVisibility}>
+          <FontAwesome6
+            name={passwordVisible ? 'eye' : 'eye-slash'}
+            size={24}
+            color="black"
+            style={{ marginRight: 15, marginLeft: 10, fontSize: 17 }}
+          
+          />
+        </TouchableOpacity>
       </View>
       <View style={Styles.registerContainer}>
         <TouchableOpacity>
-          <Text>Dont't Have Account?{" "}
+          <Text>
+            Dont't Have Account?{" "}
             <Text
               onPress={() => {
                 navigation.navigate("Register");
@@ -97,13 +118,8 @@ export default function LoginScreen({ navigation }) {
           </Text>
         </TouchableOpacity>
       </View>
-      <TouchableOpacity
-        style={Styles.loginContainer}
-        onPress={handleLogin}
-      >
-        <Text style={Styles.loginText}>
-          Login
-        </Text>
+      <TouchableOpacity style={Styles.loginContainer} onPress={handleLogin}>
+        <Text style={Styles.loginText}>Login</Text>
       </TouchableOpacity>
     </View>
   );
