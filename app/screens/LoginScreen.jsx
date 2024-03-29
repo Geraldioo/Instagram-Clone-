@@ -5,19 +5,54 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
+  Alert,
 } from "react-native";
-import React from "react";
+import React, { useContext, useState } from "react";
 import images from "../res/images";
-import { gql } from "@apollo/client";
+import { gql, useMutation } from "@apollo/client";
+import AuthContext from "../context/auth";
+import * as SecureStore from "expo-secure-store";
 
 const LOGIN = gql`
-  mutation LOGIN($username: String!, $password: String!) {
-    login(username: $username, password: $password) {
-      accessToken
-    }
+mutation Mutation($username: String!, $password: String!) {
+  login(username: $username, password: $password) {
+    accessToken
   }
+}
 `;
 export default function LoginScreen({ navigation }) {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const { setIsSignedIn } = useContext(AuthContext);
+
+  console.log(setIsSignedIn, "<< DI LOGIN");
+
+  const [login, { error, loading, data }] = useMutation(LOGIN, {
+    onCompleted: async (data) => {
+      await SecureStore.setItemAsync("accessToken", data?.login.accessToken);
+      setIsSignedIn(true);
+    },
+  });
+
+  const handleLogin = async () => {
+    try {
+      login({
+        variables: { username, password },
+      });
+      navigation.navigate("Home")
+    } catch (error) {
+      Alert.alert("Login Failed", error.message);
+    }
+  };
+
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" color={Colors.primary} />
+      </View>
+    );
+  }
+
   return (
     <View style={Styles.container}>
       <View style={Styles.logoContainer}>
@@ -27,14 +62,27 @@ export default function LoginScreen({ navigation }) {
         />
       </View>
       <View style={Styles.userNameContainer}>
-        <TextInput style={Styles.userNameInput} placeholder="username.." />
+        <TextInput
+          onChangeText={(text) => setUsername(text)}
+          style={Styles.userNameInput}
+          placeholder="username.."
+        />
       </View>
       <View style={Styles.passwordContainer}>
-        <TextInput style={Styles.passwordInput} placeholder="password.." />
+        <TextInput
+          onChangeText={(text) => setPassword(text)}
+          style={Styles.passwordInput}
+          placeholder="password.."
+        />
       </View>
       <View style={Styles.registerContainer}>
         <TouchableOpacity>
-          <Text style={Styles.registerText}>
+          <Text
+            onPress={() => {
+              navigation.navigate("Register");
+            }}
+            style={Styles.registerText}
+          >
             Don't have account? Register here
           </Text>
         </TouchableOpacity>
@@ -44,7 +92,9 @@ export default function LoginScreen({ navigation }) {
         onPress={() => navigation.navigate("Home")}
         // _signInAsync
       >
-        <Text style={Styles.loginText}>Login</Text>
+        <Text onPress={() => handleLogin()} style={Styles.loginText}>
+          Login
+        </Text>
       </TouchableOpacity>
     </View>
   );
