@@ -1,4 +1,4 @@
-import { View, Text, Image, StyleSheet } from "react-native";
+import { View, Text, Image, StyleSheet, Alert } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
 import { useState } from "react";
@@ -6,7 +6,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import colors from "../res/colors";
 import { gql, useMutation } from "@apollo/client";
 import { GET_POSTS } from "../screens/HomeScreen";
-import { Feather } from '@expo/vector-icons';
+import { Feather } from "@expo/vector-icons";
 
 const LIKE_POST = gql`
   mutation Mutation($id: ID!) {
@@ -28,19 +28,25 @@ const UNLIKE_POST = gql`
   }
 `;
 
-function PostCard({ post, id, navigate }) {
+function PostCard({ post, id, navigate, user, refetch, flag }) {
   const [liked, setLiked] = useState(false);
 
   const [likePost] = useMutation(LIKE_POST, {
-    refetchQueries: [{ query: GET_POSTS }]
+    refetchQueries: [{ query: GET_POSTS }],
   });
   const [unlikePost] = useMutation(UNLIKE_POST, {
-    refetchQueries: [{ query: GET_POSTS }]
+    refetchQueries: [{ query: GET_POSTS }],
   });
-  
+
+  post.likes.map((item) => {
+    if (item.username === user.username) {
+      flag = true;
+    }
+  });
+
   const toggleLike = async () => {
     try {
-      if (liked) {
+      if (flag) {
         await unlikePost({ variables: { id } });
       } else {
         await likePost({ variables: { id } });
@@ -48,6 +54,7 @@ function PostCard({ post, id, navigate }) {
       setLiked(!liked);
     } catch (error) {
       console.error("Error toggling like:", error.message);
+      Alert.alert("Error!", error.message);
     }
   };
 
@@ -59,7 +66,10 @@ function PostCard({ post, id, navigate }) {
             source={{ uri: `http://placekitten.com/g/200/300` }}
             style={styles.avatar}
           />
-          <Text style={styles.username}>{post.author.username}</Text>
+          <View style={{ flexDirection: "column" }}>
+            <Text style={styles.username}>{post.author.username}</Text>
+            <Text style={styles.tags}>{post.tags}</Text>
+          </View>
         </View>
       </TouchableOpacity>
       <Image
@@ -72,9 +82,9 @@ function PostCard({ post, id, navigate }) {
         <View style={styles.caption}>
           <TouchableOpacity onPress={toggleLike}>
             <AntDesign
-              name={liked ? "heart" : "hearto"}
+              name={flag ? "heart" : "hearto"}
               size={24}
-              color={liked ? "red" : "black"}
+              color={flag ? "red" : "black"}
               style={styles.iconHeart}
             />
           </TouchableOpacity>
@@ -89,7 +99,8 @@ function PostCard({ post, id, navigate }) {
             />
           </TouchableOpacity>
           <TouchableOpacity>
-          <Feather name="send" 
+            <Feather
+              name="send"
               size={24}
               color="black"
               style={styles.iconShare}
@@ -207,6 +218,11 @@ const styles = StyleSheet.create({
     color: colors.text,
     fontWeight: "bold",
     fontSize: 16,
+  },
+  tags: {
+    fontSize: 12,
+    marginTop: 1,
+    color: "black",
   },
 });
 
