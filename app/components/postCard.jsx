@@ -1,26 +1,67 @@
 import { View, Text, Image, StyleSheet } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
-import { SimpleLineIcons } from "@expo/vector-icons";
 import { useState } from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import colors from "../res/colors";
+import { gql, useMutation } from "@apollo/client";
+import { GET_POSTS } from "../screens/HomeScreen";
+import { Feather } from '@expo/vector-icons';
 
-function PostCard({ post, key, navigate }) {
+const LIKE_POST = gql`
+  mutation Mutation($id: ID!) {
+    likePost(_id: $id) {
+      username
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+const UNLIKE_POST = gql`
+  mutation Mutation($id: ID!) {
+    unlikePost(_id: $id) {
+      username
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+function PostCard({ post, id, navigate }) {
   const [liked, setLiked] = useState(false);
 
-  const toggleLike = () => {
-    setLiked(!liked);
+  const [likePost] = useMutation(LIKE_POST, {
+    refetchQueries: [{ query: GET_POSTS }]
+  });
+  const [unlikePost] = useMutation(UNLIKE_POST, {
+    refetchQueries: [{ query: GET_POSTS }]
+  });
+  
+  const toggleLike = async () => {
+    try {
+      if (liked) {
+        await unlikePost({ variables: { id } });
+      } else {
+        await likePost({ variables: { id } });
+      }
+      setLiked(!liked);
+    } catch (error) {
+      console.error("Error toggling like:", error.message);
+    }
   };
+
   return (
     <View style={styles.card}>
-      <View style={styles.header}>
-        <Image
-          source={{ uri: `http://placekitten.com/g/200/300` }}
-          style={styles.avatar}
-        />
-        <Text style={styles.username}>{post.author.username}</Text>
-      </View>
+      <TouchableOpacity>
+        <View style={styles.header}>
+          <Image
+            source={{ uri: `http://placekitten.com/g/200/300` }}
+            style={styles.avatar}
+          />
+          <Text style={styles.username}>{post.author.username}</Text>
+        </View>
+      </TouchableOpacity>
       <Image
         source={{
           uri: post.imgUrl,
@@ -37,7 +78,9 @@ function PostCard({ post, key, navigate }) {
               style={styles.iconHeart}
             />
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => navigate("Comments", { id: post._id })}
+          >
             <FontAwesome
               name="commenting"
               size={24}
@@ -46,8 +89,7 @@ function PostCard({ post, key, navigate }) {
             />
           </TouchableOpacity>
           <TouchableOpacity>
-            <SimpleLineIcons
-              name="cursor"
+          <Feather name="send" 
               size={24}
               color="black"
               style={styles.iconShare}
@@ -58,11 +100,12 @@ function PostCard({ post, key, navigate }) {
           <Text style={styles.countText}>{post.likes.length} likes</Text>
         </View>
         <View style={{ marginHorizontal: 10 }}>
-          <View style={{ flexDirection: "row"}}>
+          <View style={{ flexDirection: "row" }}>
             <Text style={styles.description}>
-            <Text style={[styles.textFooter, { marginRight: 5 }]}>
-              {post.author.username}{"  "}
-            </Text>
+              <Text style={[styles.textFooter, { marginRight: 5 }]}>
+                {post.author.username}
+                {"  "}
+              </Text>
               {post.content}
             </Text>
           </View>

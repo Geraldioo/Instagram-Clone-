@@ -5,7 +5,7 @@ import { gql, useQuery } from "@apollo/client";
 import { useCallback, useEffect, useState } from "react";
 import { Colors } from "react-native/Libraries/NewAppScreen";
 
-const GET_POSTS = gql`
+export const GET_POSTS = gql`
   query Query {
   posts {
     _id
@@ -36,20 +36,49 @@ const GET_POSTS = gql`
 }
 `
 
+const MY_PROFILE = gql`
+  query Query {
+    myProfile {
+      _id
+      name
+      username
+      email
+      followingDetail {
+        _id
+        name
+        username
+        email
+      }
+      followerDetail {
+        _id
+        name
+        username
+        email
+      }
+    }
+  }
+`;
+
 function HomeScreen({ navigation }) {
+  const { loading: loading2, error: error2, data: data2, refetch:refetch2 } = useQuery(MY_PROFILE);
   const { loading, error, data, refetch } = useQuery(GET_POSTS, {
     notifyOnNetworkStatusChange: true
   });
 
   const [refreshing, setRefreshing] = useState(false)
+  let flag = false
 
   const handleRefresh = async () => {
     setRefreshing(true);
     await refetch();
+    await refetch2()
+    flag = false
     setRefreshing(false);
   };
 
-  if (loading) {
+  let user = data2?.myProfile;
+
+  if (loading || loading2) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <ActivityIndicator
@@ -66,8 +95,8 @@ function HomeScreen({ navigation }) {
   return (
    <ScrollView
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />}>
-      {data?.posts.map((post) => (
-        <PostCard key={post._id} post={post} navigate={navigation.navigate} />
+      {data?.posts.map((post, index) => (
+        <PostCard key={index} post={post} id={post._id} navigate={navigation.navigate} />
       ))}
     </ScrollView>
   );
