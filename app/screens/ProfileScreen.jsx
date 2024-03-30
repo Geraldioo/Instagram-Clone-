@@ -8,6 +8,7 @@ import {
 } from "react-native-gesture-handler";
 import colors from "../res/colors";
 import images from "../res/images";
+// import { useRoute } from "@react-navigation/native";
 
 const data1 = [{key: '1'}];
 const data = [
@@ -47,6 +48,10 @@ function Test() {
 }
 
 export default function ProfileScreen() {
+  // const route = useRoute();
+  // const { _id } = route.params
+
+  // console.log(_id, "<<< ID");
   return (
     <FlatList
       style={{ flex: 1, backgroundColor: colors.bottomBackGround }}

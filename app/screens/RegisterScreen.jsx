@@ -40,7 +40,7 @@ const REGISTER = gql`
   }
 `;
 
-export default function LoginScreen({ navigation }) {
+export default function RegisterScreen({ navigation }) {
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");

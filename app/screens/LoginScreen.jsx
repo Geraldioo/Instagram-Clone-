@@ -39,6 +39,7 @@ export default function LoginScreen({ navigation }) {
   const [login, { error, loading, data }] = useMutation(LOGIN, {
     onCompleted: async (data) => {
       await SecureStore.setItemAsync("accessToken", data?.login.accessToken);
+      console.log(data, "<<<< TOKEN");
       setIsSignedIn(true);
     },
   });
