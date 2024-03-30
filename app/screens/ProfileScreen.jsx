@@ -54,7 +54,7 @@ export default function ProfileScreen() {
   // console.log(_id, "<<< ID");
   return (
     <FlatList
-      style={{ flex: 1, backgroundColor: colors.bottomBackGround }}
+      style={{ flex: 1, backgroundColor: "white" }}
       data={data1}
       renderItem={() => (
         <>
@@ -96,12 +96,12 @@ export default function ProfileScreen() {
             }}
           >
             <View style={{ marginBottom: 5 }}>
-              <Text style={{ color: "white", fontWeight: "bold" }}>
+              <Text style={{ color: "black", fontWeight: "bold" }}>
                 John Doe
               </Text>
             </View>
             <View style={{ marginBottom: 5 }}>
-              <Text style={{ color: "white" }}>
+              <Text style={{ color: "black" }}>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
                 eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
                 enim ad minim veniam, quis nostrud exercitation ullamco laboris
@@ -118,14 +118,12 @@ export default function ProfileScreen() {
                   borderRadius: 5,
                   marginStart: 10,
                   marginEnd: 10,
-                  backgroundColor: "#000",
+                  backgroundColor: "#E4E3E3",
                   justifyContent: "center",
-                  borderColor: "#262626",
-                  borderWidth: 1,
                 }}
               >
                 <View style={{ alignItems: "center" }}>
-                  <Text style={{ color: "white" }}>Edit Profile</Text>
+                  <Text style={{ color: "black" }}>Edit Profile</Text>
                 </View>
               </View>
             </View>
@@ -145,7 +143,7 @@ export default function ProfileScreen() {
               <TouchableOpacity>
                 <View
                   style={{
-                    backgroundColor: colors.bottomBackGround,
+                    backgroundColor: "#E4E3E3",
                     width: 64,
                     height: 64,
                     borderRadius: 100,
@@ -163,7 +161,7 @@ export default function ProfileScreen() {
               </TouchableOpacity>
               <Text
                 style={{
-                  color: "white",
+                  color: "black",
                   fontSize: 12,
                   marginTop: 5,
                 }}
@@ -174,7 +172,7 @@ export default function ProfileScreen() {
           </ScrollView>
           <View
             style={{
-              backgroundColor: "#262626",
+              backgroundColor: "#DAD7D7",
               height: 1,
               justifyContent: "center",
               marginTop: 10,
@@ -188,7 +186,7 @@ export default function ProfileScreen() {
             }}
           >
             <TouchableOpacity>
-              <Image source={images.grid} style={{ width: 25, height: 25 }} />
+              <Image source={images.grid} style={{ width: 30, height: 30 }} />
             </TouchableOpacity>
           </View>
           <FlatList
@@ -196,7 +194,7 @@ export default function ProfileScreen() {
             style={{ marginTop: 2, marginStart: 2 }}
             renderItem={({ item, index }) => <Test />}
             numColumns={3}
-            indicatorStyle={"white"}
+            indicatorStyle={"black"}
             showsVerticalScrollIndicator={true}
           />
         </>
@@ -218,7 +216,7 @@ const Styles = StyleSheet.create({
     marginLeft: 20,
   },
   numberContainer: {
-    color: "white",
+    color: "black",
     fontWeight: "bold",
     alignSelf: "center",
     fontSize: 15,
@@ -230,7 +228,7 @@ const Styles = StyleSheet.create({
     marginEnd: 20,
   },
   text: {
-    color: "white",
+    color: "black",
     //fontWeight: 'bold',
     alignSelf: "center",
   },

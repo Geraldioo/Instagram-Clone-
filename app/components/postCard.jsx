@@ -6,7 +6,7 @@ import { useState } from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import colors from "../res/colors";
 
-function PostCard({ post, key }) {
+function PostCard({ post, key, navigate }) {
   const [liked, setLiked] = useState(false);
 
   const toggleLike = () => {
@@ -57,11 +57,23 @@ function PostCard({ post, key }) {
         <View style={styles.count}>
           <Text style={styles.countText}>{post.likes.length} likes</Text>
         </View>
-        <View style={{marginHorizontal: 10}}>
-          <Text style={styles.textFooter}>{post.author.username}</Text>
-          <Text style={styles.description}>
-            Description of the photo will be here.
-          </Text>
+        <View style={{ marginHorizontal: 10 }}>
+          <View style={{ flexDirection: "row"}}>
+            <Text style={styles.description}>
+            <Text style={[styles.textFooter, { marginRight: 5 }]}>
+              {post.author.username}{"  "}
+            </Text>
+              {post.content}
+            </Text>
+          </View>
+          <TouchableOpacity
+            style={{ marginTop: 5 }}
+            onPress={() => navigate("Comments", { id: post._id })}
+          >
+            <Text style={{ color: colors.textFaded2 }}>
+              View all {post.comments.length} comments
+            </Text>
+          </TouchableOpacity>
         </View>
       </View>
     </View>
@@ -86,6 +98,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     padding: 10,
+    marginLeft: 5,
   },
   avatar: {
     width: 40,
@@ -139,7 +152,8 @@ const styles = StyleSheet.create({
     marginTop: -5,
   },
   countText: {
-    marginLeft: 7,
+    marginTop: 5,
+    marginLeft: 10,
     fontWeight: "bold",
   },
   description: {

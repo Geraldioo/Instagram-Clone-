@@ -67,7 +67,7 @@ function HomeScreen({ navigation }) {
    <ScrollView
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />}>
       {data?.posts.map((post) => (
-        <PostCard key={post._id} post={post} />
+        <PostCard key={post._id} post={post} navigate={navigation.navigate} />
       ))}
     </ScrollView>
   );

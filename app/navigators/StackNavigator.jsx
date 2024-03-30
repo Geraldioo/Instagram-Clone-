@@ -7,6 +7,9 @@ import { useState } from "react";
 const Stack = createNativeStackNavigator();
 import * as SecureStorage from "expo-secure-store";
 import AuthContext from "../context/auth";
+import { CommentScreen } from "../screens/CommentScreen";
+import colors from "../res/colors";
+
 
 function StackNavigator() {
   const [isSignedIn, setIsSignedIn] = useState(false);
@@ -38,6 +41,11 @@ function StackNavigator() {
               name="Home"
               component={TabNavigator}
               options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Comments"
+              component={CommentScreen}
+              // options={{ headerShown: false }}
             />
           </>
         )}
