@@ -7,7 +7,7 @@ import HomeScreen from "../screens/HomeScreen";
 import ExploreScreen from "../screens/ExploreScreen";
 import AddPostScreen from "../screens/AddPostScreen";
 import ReelsScreen from "../screens/ReelsScreen";
-import ProfileScreen from "../screens/ProfileScreen";
+import ProfileScreen from "../screens/MyProfileScreen";
 import LogoTitle from "../components/instagram";
 import { useContext } from "react";
 import AuthContext from "../context/auth";

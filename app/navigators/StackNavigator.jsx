@@ -9,6 +9,7 @@ import * as SecureStorage from "expo-secure-store";
 import AuthContext from "../context/auth";
 import { CommentScreen } from "../screens/CommentScreen";
 import colors from "../res/colors";
+import DetailScreen from "../screens/DetailPostScreen";
 
 
 function StackNavigator() {
@@ -45,7 +46,10 @@ function StackNavigator() {
             <Stack.Screen
               name="Comments"
               component={CommentScreen}
-              // options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Detail"
+              component={DetailScreen}
             />
           </>
         )}

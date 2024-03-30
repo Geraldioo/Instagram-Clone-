@@ -28,7 +28,7 @@ const UNLIKE_POST = gql`
   }
 `;
 
-function PostCard({ post, id, navigate, user, refetch, flag }) {
+function PostCard({ post, id, navigate, user, flag }) {
   const [liked, setLiked] = useState(false);
 
   const [likePost] = useMutation(LIKE_POST, {
