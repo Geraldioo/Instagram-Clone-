@@ -12,13 +12,31 @@ import LogoTitle from "../components/instagram";
 import { useContext } from "react";
 import AuthContext from "../context/auth";
 import * as SecureStorage from "expo-secure-store";
+import { Alert } from "react-native";
 
 function TabNavigator({navigation}) {
   const { isSignedIn, setIsSignedIn } = useContext(AuthContext);
+  
   const handleLogout = async () => {
-    await SecureStorage.deleteItemAsync("accessToken")
-    setIsSignedIn(false)
-  }
+    Alert.alert(
+      'Confirmation',
+      'Are you sure want to logout?',
+      [
+        {
+          text: 'Yes',
+          onPress: async () => {
+            await SecureStorage.deleteItemAsync('accessToken');
+            setIsSignedIn(false)
+          },
+        },
+        {
+          text: 'No',
+          style: 'cancel',
+        },
+      ],
+      { cancelable: true }
+    );
+  };
   return (
     <Tab.Navigator
       screenOptions={{

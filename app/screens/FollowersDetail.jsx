@@ -81,7 +81,7 @@ const FollowDetail = ({ navigation }) => {
                   marginRight: 10,
                 }}
               />
-              <Text>{item.name}</Text>
+              <Text>{item.username}</Text>
             </View>
           </TouchableOpacity>
         )}

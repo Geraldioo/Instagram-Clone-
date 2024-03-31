@@ -50,40 +50,6 @@ const FollowDetail = ({ navigation }) => {
 
   return (
     <View>
-      {/* <Text>Followers:</Text>
-      <FlatList
-        data={data.myProfile.followerDetail}
-        keyExtractor={(item) => item._id}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            onPress={() =>
-              navigation.navigate("User Profile", { id: item._id })
-            }
-          >
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                marginBottom: 20,
-              }}
-            >
-              <Image
-                source={{
-                  uri: "https://i.pinimg.com/564x/e8/82/72/e8827292777dca5378d3c75899029883.jpg",
-                }}
-                style={{
-                  width: 50,
-                  height: 50,
-                  borderRadius: 25,
-                  marginRight: 10,
-                }}
-              />
-              <Text>{item.name}</Text>
-            </View>
-          </TouchableOpacity>
-        )}
-      /> */}
-
       <FlatList
         style={{
             marginTop: 25,
@@ -115,7 +81,7 @@ const FollowDetail = ({ navigation }) => {
                   marginRight: 10,
                 }}
               />
-              <Text>{item.name}</Text>
+              <Text>{item.username}</Text>
             </View>
           </TouchableOpacity>
         )}
