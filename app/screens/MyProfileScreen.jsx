@@ -59,6 +59,7 @@ const MY_PROFILE = gql`
 export default function ProfileScreen({ navigation }) {
   const { loading, error, data, refetch } = useQuery(MY_PROFILE, {
     notifyOnNetworkStatusChange: true,
+    refetchQueries: [{ query: MY_PROFILE }],
   });
 
   const [refreshing, setRefreshing] = useState(false);

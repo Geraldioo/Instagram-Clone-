@@ -1,5 +1,6 @@
 import {
   ActivityIndicator,
+  Alert,
   Image,
   Keyboard,
   KeyboardAvoidingView,
@@ -14,7 +15,7 @@ import {
 } from "react-native-gesture-handler";
 import images from "../res/images";
 import colors from "../res/colors";
-import { gql, useQuery } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import { Colors } from "react-native/Libraries/NewAppScreen";
 import React, { useEffect, useState } from "react";
 import { FontAwesome } from "@expo/vector-icons";
@@ -50,20 +51,52 @@ const GET_POST = gql`
   }
 `;
 
+const ADD_COMMENT = gql`
+  mutation Mutation($id: ID!, $content: String!) {
+    commentPost(_id: $id, content: $content) {
+      content
+      username
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
 export const CommentScreen = ({ route }) => {
   const { id } = route.params;
-  const { loading, error, data } = useQuery(GET_POST, {
+  const { loading, error, data, refetch } = useQuery(GET_POST, {
     variables: { id },
   });
 
+  const [addComment, { loading: loading2, error: error2 }] =
+    useMutation(ADD_COMMENT);
+
   const [comment, setComment] = useState("");
 
-  const handleSubmit = () => {
-    console.log("Submit comment:", comment);
-    setComment("");
+  const handleSubmit = async () => {
+    try {
+      if (comment.trim() === "") {
+        // Jika komentar kosong, tampilkan pesan kesalahan
+        Alert.alert("Error", "Please enter a comment.");
+        return;
+      }
+
+      // Jalankan mutation untuk menambahkan komentar baru
+      await addComment({
+        variables: { id, content: comment },
+      });
+      // Setelah berhasil menambahkan komentar, bersihkan input
+      setComment("");
+
+      // Perbarui daftar komentar dengan memuat ulang data
+      await refetch();
+    } catch (error) {
+      console.error("Error adding comment:", error.message);
+      Alert.alert("Error", "Failed to add comment. Please try again.");
+    }
   };
 
-  if (loading) {
+  if (loading || loading2) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
         <ActivityIndicator size="large" color={Colors.primary} />
@@ -71,7 +104,7 @@ export const CommentScreen = ({ route }) => {
     );
   }
 
-  if (error) {
+  if (error || error2) {
     return <Text>Error: {error.message}</Text>;
   }
 
