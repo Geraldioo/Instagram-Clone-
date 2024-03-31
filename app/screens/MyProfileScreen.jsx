@@ -86,7 +86,7 @@ export default function ProfileScreen({ navigation }) {
     return (
       <View style={{ flex: 1 }}>
         <TouchableOpacity
-          onPress={() => navigation.navigate("Detail", {id: item._id})}
+          onPress={() => navigation.navigate("Detail", { id: item._id })}
         >
           <Image
             source={{ uri: item.imgUrl }}
@@ -120,7 +120,9 @@ export default function ProfileScreen({ navigation }) {
             <View style={Styles.container}>
               <TouchableOpacity>
                 <Image
-                  source={{ uri: "https://i.pinimg.com/564x/e8/82/72/e8827292777dca5378d3c75899029883.jpg" }}
+                  source={{
+                    uri: "https://i.pinimg.com/564x/e8/82/72/e8827292777dca5378d3c75899029883.jpg",
+                  }}
                   style={Styles.prfilePicture}
                 />
               </TouchableOpacity>
@@ -135,7 +137,9 @@ export default function ProfileScreen({ navigation }) {
                   </TouchableOpacity>
                 </View>
                 <View style={Styles.container3}>
-                  <TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => navigation.navigate("Followers Detail")}
+                  >
                     <Text style={Styles.numberContainer}>
                       {data.myProfile.followerDetail.length}
                     </Text>
@@ -143,7 +147,9 @@ export default function ProfileScreen({ navigation }) {
                   </TouchableOpacity>
                 </View>
                 <View style={Styles.container3}>
-                  <TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => navigation.navigate("Following Detail")}
+                  >
                     <Text style={Styles.numberContainer}>
                       {data.myProfile.followingDetail.length}
                     </Text>

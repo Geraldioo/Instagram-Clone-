@@ -12,6 +12,8 @@ import colors from "../res/colors";
 import DetailScreen from "../screens/DetailPostScreen";
 import ProfileScreen from "../screens/MyProfileScreen";
 import ProfileScreen2 from "../screens/AnotherProfileScreen";
+import FollowDetail from "../screens/FollowingDetail";
+import FollowDetail2 from "../screens/FollowersDetail";
 
 
 function StackNavigator() {
@@ -60,6 +62,14 @@ function StackNavigator() {
             <Stack.Screen
               name="User Profile"
               component={ProfileScreen2}
+            />
+            <Stack.Screen
+              name="Following Detail"
+              component={FollowDetail}
+            />
+            <Stack.Screen
+              name="Followers Detail"
+              component={FollowDetail2}
             />
           </>
         )}

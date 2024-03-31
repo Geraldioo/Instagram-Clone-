@@ -132,7 +132,7 @@ export const CommentScreen = ({ route }) => {
                 }}
               >
                 <Image
-                  source={{ uri: "https://picsum.photos/600" }}
+                  source={{ uri: "https://i.pinimg.com/564x/e8/82/72/e8827292777dca5378d3c75899029883.jpg" }}
                   style={{
                     width: 60,
                     height: 60,
@@ -187,7 +187,7 @@ export const CommentScreen = ({ route }) => {
         }}
       >
         <Image
-          source={{ uri: "https://picsum.photos/600" }}
+          source={{ uri: "https://i.pinimg.com/564x/e8/82/72/e8827292777dca5378d3c75899029883.jpg" }}
           style={{
             width: 36,
             height: 36,
