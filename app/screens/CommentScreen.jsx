@@ -19,6 +19,7 @@ import { gql, useMutation, useQuery } from "@apollo/client";
 import { Colors } from "react-native/Libraries/NewAppScreen";
 import React, { useEffect, useState } from "react";
 import { FontAwesome } from "@expo/vector-icons";
+// import { formatDistanceToNow } from 'date-fns';
 
 const GET_POST = gql`
   query Post($id: ID) {
@@ -76,19 +77,15 @@ export const CommentScreen = ({ route }) => {
   const handleSubmit = async () => {
     try {
       if (comment.trim() === "") {
-        // Jika komentar kosong, tampilkan pesan kesalahan
         Alert.alert("Error", "Please enter a comment.");
         return;
       }
 
-      // Jalankan mutation untuk menambahkan komentar baru
       await addComment({
         variables: { id, content: comment },
       });
-      // Setelah berhasil menambahkan komentar, bersihkan input
       setComment("");
 
-      // Perbarui daftar komentar dengan memuat ulang data
       await refetch();
     } catch (error) {
       console.error("Error adding comment:", error.message);
@@ -107,6 +104,11 @@ export const CommentScreen = ({ route }) => {
   if (error || error2) {
     return <Text>Error: {error.message}</Text>;
   }
+
+  const timeAgo = (time) => {
+    console.log(time, "???????");
+    return formatDistanceToNow (new Date(time), { addSuffix: true });
+  } 
 
   return (
     <View style={{ flex: 1 }}>
@@ -156,7 +158,7 @@ export const CommentScreen = ({ route }) => {
                         marginLeft: 5,
                       }}
                     >
-                      2h
+                      1h
                     </Text>
                   </View>
                 </View>

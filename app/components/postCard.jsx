@@ -77,7 +77,7 @@ function PostCard({ post, id, navigate, user, flag }) {
       <TouchableOpacity onPress={toggleProfile}>
         <View style={styles.header}>
           <Image
-            source={{ uri: `http://placekitten.com/g/200/300` }}
+            source={{ uri: `https://i.pinimg.com/564x/e8/82/72/e8827292777dca5378d3c75899029883.jpg` }}
             style={styles.avatar}
           />
           <View style={{ flexDirection: "column" }}>

@@ -120,7 +120,7 @@ export default function ProfileScreen({ navigation }) {
             <View style={Styles.container}>
               <TouchableOpacity>
                 <Image
-                  source={{ uri: "https://picsum.photos/600" }}
+                  source={{ uri: "https://i.pinimg.com/564x/e8/82/72/e8827292777dca5378d3c75899029883.jpg" }}
                   style={Styles.prfilePicture}
                 />
               </TouchableOpacity>
