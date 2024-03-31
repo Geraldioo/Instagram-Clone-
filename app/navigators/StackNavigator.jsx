@@ -10,6 +10,8 @@ import AuthContext from "../context/auth";
 import { CommentScreen } from "../screens/CommentScreen";
 import colors from "../res/colors";
 import DetailScreen from "../screens/DetailPostScreen";
+import ProfileScreen from "../screens/MyProfileScreen";
+import ProfileScreen2 from "../screens/AnotherProfileScreen";
 
 
 function StackNavigator() {
@@ -50,6 +52,14 @@ function StackNavigator() {
             <Stack.Screen
               name="Detail"
               component={DetailScreen}
+            />
+            <Stack.Screen
+              name="My Profile"
+              component={ProfileScreen}
+            />
+            <Stack.Screen
+              name="User Profile"
+              component={ProfileScreen2}
             />
           </>
         )}

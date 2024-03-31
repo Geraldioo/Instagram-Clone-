@@ -36,7 +36,7 @@ export const GET_POST = gql`
 }
 `
 
-const MY_PROFILE = gql`
+export const MY_PROFILE = gql`
   query Query {
     myProfile {
       _id

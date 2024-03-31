@@ -48,7 +48,7 @@ function PostCard({ post, id, navigate, user, flag }) {
     try {
       if (flag) {
         await unlikePost({ variables: { id } });
-      } else {
+      } else {  
         await likePost({ variables: { id } });
       }
       setLiked(!liked);
@@ -58,9 +58,23 @@ function PostCard({ post, id, navigate, user, flag }) {
     }
   };
 
+
+  const toggleProfile = async () => {
+    try {
+      if (post.authorId === user._id){
+        navigate("My Profile")
+      }else{
+        navigate("User Profile", {id: post.authorId})
+      }
+    } catch (error) {
+      console.log("Error toggling profile", error.message);
+      Alert.alert("Error!", error.message);
+    }
+  }
+
   return (
     <View style={styles.card}>
-      <TouchableOpacity>
+      <TouchableOpacity onPress={toggleProfile}>
         <View style={styles.header}>
           <Image
             source={{ uri: `http://placekitten.com/g/200/300` }}
