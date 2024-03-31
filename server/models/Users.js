@@ -18,14 +18,7 @@ class User {
     });
     return findUser;
   }
-
-   //  static async findById(id) {
-   //    const user = await this.userCollection().findOne({
-   //      _id: new ObjectId(String(id)),
-   //    });
-   //    return user;
-   //  }
-
+  
   static async createOne(payload) {
     const newUser = await this.userCollection().insertOne(payload);
     return newUser;
@@ -69,6 +62,14 @@ class User {
           foreignField: "_id",
           as: "followingDetail",
         },
+      },
+      {
+        $lookup: {
+          from: "posts",
+          localField: "_id",
+          foreignField: "authorId",
+          as: "userPost"
+        }
       },
       {
         $project: {
@@ -134,6 +135,58 @@ class User {
     const cursor = this.userCollection().aggregate(agg);
     const result = await cursor.toArray();
     return result;
+  }
+  static async myProfile(id) {
+    const agg = [
+      {
+        $match: {
+          _id: new ObjectId(String(id)),
+        },
+      },
+      {
+        $lookup: {
+          from: "follows",
+          localField: "_id",
+          foreignField: "followingId",
+          as: "followers",
+        },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "followers.followerId",
+          foreignField: "_id",
+          as: "followerDetail",
+        },
+      },
+      {
+        $lookup: {
+          from: "follows",
+          localField: "_id",
+          foreignField: "followerId",
+          as: "following",
+        },
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "following.followingId",
+          foreignField: "_id",
+          as: "followingDetail",
+        },
+      },
+      {
+        $lookup: {
+          from: "posts",
+          localField: "_id",
+          foreignField: "authorId",
+          as: "userPost"
+        }
+      }
+    ];
+    const cursor = this.userCollection().aggregate(agg);
+    const result = await cursor.toArray();
+    return result[0];
   }
 }
 

@@ -31,7 +31,7 @@ const typeDefsPost = `#graphql
   }
 
   type Like {
-    username: String!
+    username: String
     createdAt: Date!
     updatedAt: Date!
   }

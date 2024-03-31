@@ -114,6 +114,7 @@ class Post {
     ];
     const cursor = this.postCollection().aggregate(agg);
     const result = await cursor.toArray();
+    await redis.del("posts");
     return result[0];
   }
 
@@ -137,6 +138,7 @@ class Post {
     const updatedPost = await this.postCollection().findOne({
       _id: new ObjectId(String(id)),
     });
+    await redis.del("posts");
     return updatedPost;
   }
 }

@@ -11,6 +11,20 @@ const typeDefsFollow = `#graphql
     followerId: ID
     createdAt: Date
     updatedAt: Date
+    followerUser: [follower]
+    followingUser: [following]
+  }
+  type follower {
+    _id: ID,
+    name: String,
+    username: String,
+    email: String
+  }
+  type following {
+    _id: ID,
+    name: String,
+    username: String,
+    email: String
   }
   type Query {
     follows: [Follow]
@@ -35,11 +49,6 @@ const resolversFollow = {
 
       const followerId = new ObjectId(String(currentUser.id));
       const followingId = new ObjectId(String(_id));
-
-     await Follow.findFollowers(
-        followingId,
-        followerId
-      );
 
       const newFollow = {
         followingId,
